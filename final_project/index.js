@@ -8,10 +8,14 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
+app.use("/customer", session({
+  secret: "fingerprint_customer",
+  resave: true, 
+  saveUninitialized: true
+}));
 
 app.use("/customer/auth/*", function auth(req, res, next) {
-  if (req.session && req.session.username) {
+  if (req.session && req.session.authorization) {
     // User is authenticated, proceed to the next middleware or route handler
     next();
   } else {
@@ -20,15 +24,9 @@ app.use("/customer/auth/*", function auth(req, res, next) {
   }
 });
  
-const PORT =5000;
+const PORT = 5000;
 
 app.use("/customer", customer_routes);
 app.use("/", genl_routes);
 
-app.listen(PORT,()=>console.log("Server is running"));
-
-app.use(session({
-  secret: 'fingerprint_customer',  // use a strong secret
-  resave: true,
-  saveUninitialized: true
-}));
+app.listen(PORT, () => console.log("Server is running"));
